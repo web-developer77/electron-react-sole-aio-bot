@@ -165,6 +165,7 @@ class TaskManager {
       worker.process.send({ type: 'start-task', taskData: task, profile, proxies });
       this.tasks[task.id] = { ...this.tasks[task.id], pid: worker.pid, active: true };
       mainWindow.sendStatus(task.id, 'Starting', '#ffde46');
+      // mainWindow.sendStatus(task.id, 'Monitoring', '#ffde46');
     }
     UserSession.activateUser(settingsManager.getKey());
   }
@@ -182,6 +183,9 @@ class TaskManager {
     if (!this.tasks[id].active) return;
     const worker = this.getWorker(this.tasks[id].pid ? this.tasks[id].pid : this.editedTasks[id].pid);
     worker.process.send({ type: 'stop-task', id, sendStatus: true });
+
+    // const task = this.tasks[id];
+    // mainWindow.sendStatus(task.id, 'Stopped', taskColors.red);
     worker.taskCount -= 1;
     this.tasks[id].active = false;
   }
